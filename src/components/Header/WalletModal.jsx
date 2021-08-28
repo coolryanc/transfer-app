@@ -110,7 +110,7 @@ const WalletModal = ({ open, onClose }) => {
                             {account ? (
                                 <Box>
                                     <Box mb={2}>
-                                        <Chip label={chainInfo} />
+                                        <Chip label={chainInfo} color="primary" />
                                     </Box>
                                     <Card variant="outlined" className={classes.option}>
                                         <Box
@@ -136,7 +136,7 @@ const WalletModal = ({ open, onClose }) => {
                                     ) : (
                                         <Card variant="outlined" className={classes.option}>
                                             <Box display="flex" alignItems="center" p={2}>
-                                                <CircularProgress color="grey.500" size={16} />
+                                                <CircularProgress size={16} />
                                                 <Typography className={classes.text}>
                                                     Initializing ...
                                                 </Typography>
