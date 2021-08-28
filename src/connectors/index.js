@@ -12,6 +12,6 @@ export const supportedWallet = [
     {
         connector: injected,
         name: 'MetaMask',
-        icon: MetaMaskIcon
-    }
+        icon: MetaMaskIcon,
+    },
 ];

@@ -19,29 +19,26 @@ const Theme = ({ children }) => {
                     body: {
                         width: '100%',
                         height: '100%',
-                        backgroundImage: 'linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%)'
+                        backgroundImage: 'linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%)',
                     },
                     '#root': {
                         width: '100%',
-                        height: '100%'
-                    }
+                        height: '100%',
+                    },
                 },
-            }
+            },
         },
     });
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Container>
-                {children}
-            </Container>
+            <Container>{children}</Container>
         </ThemeProvider>
     );
 };
 
-
 Theme.propTypes = {
-    children: PropTypes.node
+    children: PropTypes.node,
 };
 export default Theme;
