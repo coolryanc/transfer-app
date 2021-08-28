@@ -1,6 +1,7 @@
 import { createWeb3ReactRoot, Web3ReactProvider } from '@web3-react/core';
 // material
 import { styled } from '@material-ui/core/styles';
+import { Box } from '@material-ui/core';
 // components
 import Header from './components/Header';
 import Payment from './components/Payment';
@@ -11,6 +12,10 @@ import getLibrary from './utils/getLibrary';
 
 const RootStyle = styled('div')({
     minHeight: '100vh',
+    textAlign: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between'
 });
 
 const Web3ProviderNetwork = createWeb3ReactRoot('NETWORK');
@@ -25,6 +30,9 @@ function App() {
                         <main>
                             <Payment />
                         </main>
+                        <footer>
+                            <Box paddingY={4}>© 2021 ryanC1993.</Box>
+                        </footer>
                     </RootStyle>
                 </Theme>
             </Web3ProviderNetwork>
