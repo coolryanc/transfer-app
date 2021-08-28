@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import { CssBaseline } from '@material-ui/core';
+import { CssBaseline, Container } from '@material-ui/core';
 import { ThemeProvider, createTheme } from '@material-ui/core/styles';
 
 const Theme = ({ children }) => {
@@ -32,7 +32,9 @@ const Theme = ({ children }) => {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            {children}
+            <Container>
+                {children}
+            </Container>
         </ThemeProvider>
     );
 };
