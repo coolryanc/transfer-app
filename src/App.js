@@ -10,8 +10,7 @@ import Theme from './theme';
 import getLibrary from './utils/getLibrary'
 
 const RootStyle = styled('div')({
-    minHeight: '100vh',
-    overflow: 'hidden'
+    minHeight: '100vh'
 });
 
 const Web3ProviderNetwork = createWeb3ReactRoot('NETWORK')

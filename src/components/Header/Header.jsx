@@ -1,38 +1,67 @@
 import { useState } from 'react';
-import { styled } from '@material-ui/core/styles';
-import { AppBar, Box, Button, Chip } from '@material-ui/core';
+import { useWeb3React } from '@web3-react/core'
+import { makeStyles } from '@material-ui/core/styles';
+import { AppBar, Box, Button, Typography } from '@material-ui/core';
 import WalletModal from './WalletModal.jsx';
 
-const Root = styled(AppBar)({
-    boxShadow: 'none',
-    backgroundColor: 'transparent',
-    position: 'relative'
-})
+const useStyles = makeStyles((theme) => {
+    const common = {
+        background: theme.palette.grey[700],
+        color: '#fff',
+        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+        textTransform: 'initial',
+        '&:hover': {
+            backgroundColor: theme.palette.grey[800]
+        }
+    };
+    return {
+        bar: {
+            boxShadow: 'none',
+            backgroundColor: 'transparent',
+            position: 'relative',
+            fontSize: 'bold'
+        },
+        btn: common,
+        account: {
+            overflow: 'hidden',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            maxWidth: 120,
+        }
+    };
+});
 
 const Header = () => {
+    const classes = useStyles();
     const [showWalletModal, setShowWalletModal] = useState(false);
+    const { account } = useWeb3React();
+
     const handleClickConnect = () => setShowWalletModal(prev => !prev);
 
     return (
-        <Root>
+        <AppBar className={classes.bar}>
             <Box
-                m={3}
+                p={3}
                 display="flex"
                 alignItems="center"
                 justifyContent="flex-end"
             >
-                <Box mx={1}>
-                    <Chip label="Network" />
-                </Box>
-                <Box mx={1}>
-                    <Button onClick={handleClickConnect}>Connect</Button>
-                </Box>
+                {account ? (
+                    <Button
+                        className={classes.btn}
+                        onClick={handleClickConnect}
+                    >
+                        <Typography className={classes.account}>{account}</Typography>
+                    </Button>
+                ) : (
+                    <Button className={classes.btn} onClick={handleClickConnect}>Connect</Button>
+                )}
             </Box>
             <WalletModal
                 open={showWalletModal}
                 onClose={handleClickConnect}
             />
-        </Root>
+        </AppBar>
     )
 };
 

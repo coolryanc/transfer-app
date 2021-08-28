@@ -19,6 +19,7 @@ const Theme = ({ children }) => {
                     body: {
                         width: '100%',
                         height: '100%',
+                        backgroundImage: 'linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%)'
                     },
                     '#root': {
                         width: '100%',

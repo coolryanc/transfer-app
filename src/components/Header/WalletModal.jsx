@@ -2,10 +2,14 @@ import { useState } from 'react';
 import { useWeb3React } from '@web3-react/core'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
-import { Box, Card, CircularProgress, Fade, Modal, Paper, Typography } from '@material-ui/core';
+import { Box, Card, Chip, CircularProgress, Fade, Modal, Paper, Typography } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
+import AccountCircleOutlinedIcon from '@material-ui/icons/AccountCircleOutlined';
 import SettingsEthernetOutlinedIcon from '@material-ui/icons/SettingsEthernetOutlined';
 // connector
 import { supportedWallet } from '../../connectors'
+// constants
+import { ChainIdInfo } from '../../constants';
 
 const useStyles = makeStyles((theme) => ({
     text: {
@@ -35,7 +39,7 @@ const WalletOption = ({ connector, name, icon, handleActivation }) => {
     const classes = useStyles();
 
     return (
-        <Box mb={2}>
+        <Box mt={2}>
             <Card
                 variant="outlined"
                 className={classes.option}
@@ -51,10 +55,11 @@ const WalletOption = ({ connector, name, icon, handleActivation }) => {
 }
 
 const WalletModal = ({ open, onClose }) => {
+    const classes = useStyles();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
-    const { activate } = useWeb3React();
-    const classes = useStyles();
+    const { account, activate, chainId, deactivate } = useWeb3React();
+    const chainInfo = ChainIdInfo?.[chainId];
 
     const handleOnClose = () => {
         setError('');
@@ -75,38 +80,65 @@ const WalletModal = ({ open, onClose }) => {
             .finally(() => {
                 setLoading(false);
             })
-    }
+    };
+    const handleDeactivate = () => {
+        deactivate();
+        onClose();
+    };
 
     return (
         <Modal open={open} onClose={handleOnClose}>
-            <Fade in={open} easing="enter">
+            <Fade in={open} easing="out">
                 <Box className={classes.modal}>
                     <Paper elevation={0}>
                         <Box p={4}>
-                            <Box display="flex" alignItems="center" mb={3}>
-                                <SettingsEthernetOutlinedIcon />
-                                <Typography className={classes.text}>Connect to a wallet.</Typography>
+                            <Box display="flex" alignItems="center" mb={2}>
+                                {account ? <AccountCircleOutlinedIcon /> : <SettingsEthernetOutlinedIcon />}
+                                <Typography className={classes.text}>
+                                    {account ? 'Account info.' : 'Connect to a wallet.'}
+                                </Typography>
                             </Box>
-                            <Box mb={3}>
-                                {!loading ? supportedWallet.map((config, idx) => (
-                                    <WalletOption
-                                        key={`support-wallet-${idx}`}
-                                        {...config}
-                                        handleActivation={handleActivation}
-                                    />
-                                )) : (
+                            {account ? (
+                                <Box>
+                                    <Box mb={2}>
+                                        <Chip label={chainInfo} />
+                                    </Box>
                                     <Card
                                         variant="outlined"
                                         className={classes.option}
                                     >
-                                        <Box display="flex" alignItems="center" p={2}>
-                                            <CircularProgress color="grey.500" size={16} />
-                                            <Typography className={classes.text}>Initializing ...</Typography>
+                                        <Box display="flex" alignItems="center" p={2} onClick={handleDeactivate}>
+                                            <Typography>Disconnect</Typography>
                                         </Box>
                                     </Card>
-                                )}
-                            </Box>
-                            {error && <Typography>{error}</Typography>}
+                                </Box>
+                            ) : (
+                                <Box>
+                                    {!loading ? supportedWallet.map((config, idx) => (
+                                        <WalletOption
+                                            key={`support-wallet-${idx}`}
+                                            {...config}
+                                            handleActivation={handleActivation}
+                                        />
+                                    )) : (
+                                        <Card
+                                            variant="outlined"
+                                            className={classes.option}
+                                        >
+                                            <Box display="flex" alignItems="center" p={2}>
+                                                <CircularProgress color="grey.500" size={16} />
+                                                <Typography className={classes.text}>Initializing ...</Typography>
+                                            </Box>
+                                        </Card>
+                                    )}
+                                </Box>
+                            )}
+                            
+                            {error && (
+                                <Box mt={3}>
+                                    <Alert severity="error">{error}</Alert>
+                                </Box>
+                            )}
                         </Box>
                     </Paper>
                 </Box>
