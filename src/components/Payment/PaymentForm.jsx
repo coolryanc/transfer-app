@@ -18,7 +18,7 @@ const PaymentForm = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
             <Box display="flex" alignItems="center" mb={2}>
                 <InfoOutlinedIcon />
-                <Typography variant="p" className={classes.text}>Transer Your ETH.</Typography>
+                <Typography className={classes.text}>Transer Your ETH.</Typography>
             </Box>
             <Controller
                 render={({ field }) => (

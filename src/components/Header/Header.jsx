@@ -1,5 +1,7 @@
-import { AppBar, Box, Button, Chip } from '@material-ui/core';
+import { useState } from 'react';
 import { styled } from '@material-ui/core/styles';
+import { AppBar, Box, Button, Chip } from '@material-ui/core';
+import WalletModal from './WalletModal.jsx';
 
 const Root = styled(AppBar)({
     boxShadow: 'none',
@@ -8,6 +10,9 @@ const Root = styled(AppBar)({
 })
 
 const Header = () => {
+    const [showWalletModal, setShowWalletModal] = useState(false);
+    const handleClickConnect = () => setShowWalletModal(prev => !prev);
+
     return (
         <Root>
             <Box
@@ -20,9 +25,13 @@ const Header = () => {
                     <Chip label="Network" />
                 </Box>
                 <Box mx={1}>
-                    <Button>Connect</Button>
+                    <Button onClick={handleClickConnect}>Connect</Button>
                 </Box>
             </Box>
+            <WalletModal
+                open={showWalletModal}
+                onClose={handleClickConnect}
+            />
         </Root>
     )
 };
