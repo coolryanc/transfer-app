@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button, Box, CircularProgress, TextField, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
+import { useSnackbar } from 'notistack';
 // utils
 import { utils } from 'ethers';
 
@@ -19,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
 const PaymentForm = () => {
     const classes = useStyles();
     const { library } = useWeb3React();
+    const { enqueueSnackbar } = useSnackbar();
     const { control, handleSubmit, reset } = useForm();
     const [pending, setPending] = useState(false);
     const [error, setError] = useState(false);
@@ -38,6 +40,20 @@ const PaymentForm = () => {
                 to: address,
                 value: utils?.parseEther(amount.replace('$ ', ''))
             });
+            const { hash } = tx;
+            enqueueSnackbar(
+                <div>
+                    <span>{`Send ${amount} ETH success.`}</span>
+                    <a
+                        href={`https://ropsten.etherscan.io/tx/${hash}`}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                        className={classes.text}
+                    >
+                        View on Explorer
+                    </a>
+                </div>
+            );
             reset({ ...formInitValues });
         } catch (error) {
             setError(error?.reason ?? 'Failed.');
