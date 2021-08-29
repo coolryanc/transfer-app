@@ -90,7 +90,7 @@ const PaymentForm = () => {
                         thousandSeparator={true}
                         decimalScale={5}
                         prefix="$ "
-                        inputmode="numeric"
+                        inputMode="numeric"
                         customInput={TextField}
                         fullWidth
                         margin="normal"

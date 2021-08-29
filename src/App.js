@@ -7,6 +7,10 @@ import { Box } from '@material-ui/core';
 import Header from './components/Header';
 import Payment from './components/Payment';
 import Toast from './components/shared/Toast.jsx';
+// updaters
+import AppUpdater from './state'
+// store
+import { AppProvider } from './store';
 // theme
 import Theme from './theme';
 // utils
@@ -20,7 +24,15 @@ const RootStyle = styled('div')({
     justifyContent: 'space-between'
 });
 
-const Web3ProviderNetwork = createWeb3ReactRoot('NETWORK');
+const Web3ProviderNetwork = createWeb3ReactRoot();
+
+function Updaters() {
+    return (
+        <>
+            <AppUpdater />
+        </>
+    );
+}
 
 function App() {
     return (
@@ -36,15 +48,18 @@ function App() {
                             <Toast id={key} message={message} />
                         )}
                     >
-                        <RootStyle>
-                            <Header />
-                            <main>
-                                <Payment />
-                            </main>
-                            <footer>
-                                <Box paddingY={4}>© 2021 ryanC1993.</Box>
-                            </footer>
-                        </RootStyle>
+                        <AppProvider>
+                            <Updaters />
+                            <RootStyle>
+                                <Header />
+                                <main>
+                                    <Payment />
+                                </main>
+                                <footer>
+                                    <Box paddingY={4}>© 2021 ryanC1993.</Box>
+                                </footer>
+                            </RootStyle>
+                        </AppProvider>
                     </SnackbarProvider>
                 </Theme>
             </Web3ProviderNetwork>
