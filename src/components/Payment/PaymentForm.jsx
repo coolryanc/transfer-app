@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { useForm, Controller } from 'react-hook-form';
+import NumberFormat from "react-number-format";
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Box, CircularProgress, TextField, Typography } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -8,7 +9,7 @@ import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 // utils
 import { utils } from 'ethers';
 
-const formInitValues = { address: null, amount: null };
+const formInitValues = { address: "", amount: 0.0 };
 const useStyles = makeStyles((theme) => ({
     text: {
         marginLeft: theme.spacing(1),
@@ -35,7 +36,7 @@ const PaymentForm = () => {
             const signer = library.getSigner();
             const tx = await signer.sendTransaction({
                 to: address,
-                value: utils?.parseEther(amount)
+                value: utils?.parseEther(amount.replace('$ ', ''))
             });
             reset({ ...formInitValues });
         } catch (error) {
@@ -59,30 +60,33 @@ const PaymentForm = () => {
                         variant="outlined"
                         label="Address"
                         disabled={pending}
+                        required
                         {...field}
                     />
                 )}
                 name="address"
                 control={control}
-                defaultValue=""
                 className="materialUIInput"
             />
             <Controller
                 render={({ field }) => (
-                    <TextField
+                    <NumberFormat
+                        thousandSeparator={true}
+                        decimalScale={5}
+                        prefix="$ "
+                        inputmode="numeric"
+                        customInput={TextField}
                         fullWidth
-                        type="number"
                         margin="normal"
                         variant="outlined"
                         label="Amount"
                         disabled={pending}
+                        required
                         {...field}
                     />
                 )}
                 name="amount"
                 control={control}
-                defaultValue=""
-                className="materialUIInput"
             />
             <Box mt={2}>
                 <Button
