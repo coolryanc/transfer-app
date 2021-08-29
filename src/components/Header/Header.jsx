@@ -1,19 +1,12 @@
 import { useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Box, Button, Typography } from '@material-ui/core';
+import { AppBar, Box, Button } from '@material-ui/core';
 import WalletModal from './WalletModal.jsx';
+// utils
+import { shortenAddress } from '../../utils/address';
 
 const useStyles = makeStyles((theme) => {
-    const common = {
-        background: theme.palette.grey[700],
-        color: '#fff',
-        padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
-        textTransform: 'initial',
-        '&:hover': {
-            backgroundColor: theme.palette.grey[800],
-        },
-    };
     return {
         bar: {
             boxShadow: 'none',
@@ -21,13 +14,16 @@ const useStyles = makeStyles((theme) => {
             position: 'relative',
             fontSize: 'bold',
         },
-        btn: common,
-        account: {
-            overflow: 'hidden',
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            maxWidth: 120,
-        },
+        btn: {
+            background: theme.palette.grey[800],
+            color: '#fff',
+            padding: `${theme.spacing(1)}px ${theme.spacing(2)}px`,
+            textTransform: 'initial',
+            fontWeight: 'bold',
+            '&:hover': {
+                backgroundColor: theme.palette.grey[900],
+            },
+        }
     };
 });
 
@@ -43,7 +39,7 @@ const Header = () => {
             <Box p={3} display="flex" alignItems="center" justifyContent="flex-end">
                 {account ? (
                     <Button className={classes.btn} onClick={handleClickConnect}>
-                        <Typography className={classes.account}>{account}</Typography>
+                        {shortenAddress(account)}
                     </Button>
                 ) : (
                     <Button className={classes.btn} onClick={handleClickConnect}>

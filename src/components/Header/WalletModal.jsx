@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
+import { UnsupportedChainIdError, useWeb3React } from '@web3-react/core'
 import PropTypes from 'prop-types';
 import { makeStyles } from '@material-ui/core/styles';
 import {
     Box,
+    Button,
     Card,
     Chip,
     CircularProgress,
@@ -42,6 +43,18 @@ const useStyles = makeStyles((theme) => ({
             backgroundColor: theme.palette.grey[100],
         },
     },
+    btn: {
+        textTransform: 'initial',
+        background: theme.palette.grey[100],
+        '&:hover': {
+            backgroundColor: theme.palette.grey[200],
+        },
+    },
+    account: {
+        paddingLeft: theme.spacing(1),
+        marginTop: theme.spacing(2),
+        wordBreak: 'break-word'
+    }
 }));
 
 const WalletOption = ({ connector, name, icon, handleActivation }) => {
@@ -83,7 +96,11 @@ const WalletModal = ({ open, onClose }) => {
             })
             .catch((error) => {
                 if (error) {
-                    setError(`Connet ${name} failed.`);
+                    if (error instanceof UnsupportedChainIdError) {
+                        setError(`Connet ${name} failed. Wrong Network.`);
+                    } else {
+                        setError(`Connet ${name} failed.`);
+                    }
                 }
             })
             .finally(() => {
@@ -108,20 +125,21 @@ const WalletModal = ({ open, onClose }) => {
                                 </Typography>
                             </Box>
                             {account ? (
-                                <Box>
-                                    <Box mb={2}>
-                                        <Chip label={chainInfo} color="primary" />
+                                <Box display="flex" flexDirection="column">
+                                    <Box marginY={2}>
+                                        <Card variant="outlined">
+                                            <Box p={2}>
+                                                <Chip label={chainInfo} color="primary" />
+                                                <Typography className={classes.account}>{account}</Typography>
+                                            </Box>
+                                        </Card>
                                     </Box>
-                                    <Card variant="outlined" className={classes.option}>
-                                        <Box
-                                            display="flex"
-                                            alignItems="center"
-                                            p={2}
-                                            onClick={deactivate}
-                                        >
-                                            <Typography>Disconnect</Typography>
-                                        </Box>
-                                    </Card>
+                                    <Button
+                                        onClick={deactivate}
+                                        className={classes.btn}
+                                    >
+                                        Disconnect
+                                    </Button>
                                 </Box>
                             ) : (
                                 <Box>
