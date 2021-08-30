@@ -1,7 +1,10 @@
 import { useCallback, useEffect } from 'react';
 import { useWeb3React } from '@web3-react/core';
+import { useSnackbar } from 'notistack';
 import retry from 'retry';
 import { useAppDispatch, useAppContext } from '../index';
+// utils
+import { shortenAddress } from '../../utils/address'
 
 const retryOption = {
     retries: 10,
@@ -12,8 +15,8 @@ const retryOption = {
 
 const Updater = () => {
     const { chainId, library } = useWeb3React()
-    
     const { blockNumber, transactions } = useAppContext();
+    const { enqueueSnackbar } = useSnackbar();
     const dispatch = useAppDispatch();
 
     const getReceipt = useCallback(
@@ -52,6 +55,8 @@ const Updater = () => {
                     if (err || !receipt) {
                         return;
                     }
+
+                    enqueueSnackbar(`Sending ETH from ${shortenAddress(receipt.from)} to ${shortenAddress(receipt.to)} success.`);
 
                     dispatch({ type: 'UPDATE_TRANSACTION', payload: {
                         transaction: {
