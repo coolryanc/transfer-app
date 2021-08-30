@@ -45,14 +45,29 @@ const Updater = () => {
     useEffect(() => {
         if (!chainId || !library || !blockNumber) return
 
-        transactions.forEach(transaction => {
-            const { hash } = transaction;
-            getReceipt(hash, (err, receipt) => {
-                if (err || !receipt) {
-                    return;
-                }
+        Object.keys(transactions)
+            .filter(hash => !transactions?.[hash]?.receipt)
+            .forEach(hash => {
+                getReceipt(hash, (err, receipt) => {
+                    if (err || !receipt) {
+                        return;
+                    }
+
+                    dispatch({ type: 'UPDATE_TRANSACTION', payload: {
+                        transaction: {
+                            ...transactions?.[hash],
+                            receipt
+                        }
+                    }});
+
+                    if (receipt?.blockNumber > blockNumber) {
+                        dispatch({
+                            type: 'UPDATE_BLOCK_NUMBER',
+                            payload: { blockNumber: receipt?.blockNumber }
+                        });
+                    }
+                });
             });
-        })
 
     }, [chainId, library, blockNumber, transactions, dispatch, getReceipt])
 

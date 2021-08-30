@@ -6,17 +6,29 @@ const AppDispatchContext = createContext();
 const initialState = {
     chainId: null,
     blockNumber: null,
-    transactions: []
+    /**
+     * transactions: {
+     *     [hash]: {},
+     *     [hash]: {},
+     *     ...
+     * }
+     */
+    transactions: {}
 };
 
 function appReducer(state, action) {
     const { type, payload } = action;
     switch (type) {
-        case 'ADD_TRANSACTION': {
-            const { transaction } = payload;
+        case 'ADD_TRANSACTION':
+        case 'UPDATE_TRANSACTION': {
+            const transaction = payload?.transaction;
+            const hash = payload?.transaction?.hash;
             return {
                 ...state,
-                transactions: [transaction, ...state.transactions]
+                transactions: {
+                    ...state.transactions,
+                    [hash]: transaction
+                }
             };
         }
         case 'UPDATE_CHAIN_ID': {
