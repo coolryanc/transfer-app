@@ -10,6 +10,7 @@ import Toast from './components/shared/Toast.jsx';
 // state
 import { AppProvider } from './state';
 import AppUpdater from './state/app'
+import TransactionsUpdater from './state/transactions';
 // theme
 import Theme from './theme';
 // utils
@@ -29,6 +30,7 @@ function Updaters() {
     return (
         <>
             <AppUpdater />
+            <TransactionsUpdater />
         </>
     );
 }
