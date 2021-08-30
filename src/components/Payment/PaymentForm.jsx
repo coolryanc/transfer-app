@@ -7,6 +7,8 @@ import { Button, Box, CircularProgress, TextField, Typography } from '@material-
 import { Alert } from '@material-ui/lab';
 import InfoOutlinedIcon from '@material-ui/icons/InfoOutlined';
 import { useSnackbar } from 'notistack';
+// state
+import { useAppDispatch } from '../../state';
 // utils
 import { utils } from 'ethers';
 
@@ -22,6 +24,7 @@ const PaymentForm = () => {
     const { library } = useWeb3React();
     const { enqueueSnackbar } = useSnackbar();
     const { control, handleSubmit, reset } = useForm();
+    const dispatch = useAppDispatch();
     const [pending, setPending] = useState(false);
     const [error, setError] = useState(false);
 
@@ -36,11 +39,13 @@ const PaymentForm = () => {
         try {
             setPending(true);
             const signer = library.getSigner();
-            const tx = await signer.sendTransaction({
+            const transaction = await signer.sendTransaction({
                 to: address,
                 value: utils?.parseEther(amount.replace('$ ', ''))
             });
-            const { hash } = tx;
+            setError('');
+            dispatch({ type: 'ADD_TRANSACTION', payload: { transaction }});
+            const { hash } = transaction;
             enqueueSnackbar(
                 <div>
                     <span>{`Send ${amount} ETH success.`}</span>

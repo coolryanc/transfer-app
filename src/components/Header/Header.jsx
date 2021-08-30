@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useWeb3React } from '@web3-react/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { AppBar, Box, Button, Chip } from '@material-ui/core';
+import { AppBar, Box, Button } from '@material-ui/core';
 import WalletModal from './WalletModal.jsx';
 // utils
 import { shortenAddress } from '../../utils/address';

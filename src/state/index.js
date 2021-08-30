@@ -1,66 +1,71 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useWeb3React } from '@web3-react/core';
-import { useAppDispatch } from '../store';
-import useDebounce from '../hooks/useDebounce';
+import React, { createContext, useReducer, useContext } from 'react';
+import PropTypes from 'prop-types';
 
-const Updater = () => {
-    const dispatch = useAppDispatch();
-    const { chainId, library } = useWeb3React()
-    const [state, setState] = useState({
-        chainId,
-        blockNumber: null
-    });
-
-    const blockNumberCallback = useCallback(
-        (blockNumber) => {
-            setState((state) => {
-                if (chainId === state.chainId) {
-                    if (typeof state.blockNumber !== 'number') return { chainId, blockNumber }
-                    return { chainId, blockNumber: Math.max(blockNumber, state.blockNumber) }
-                }
-                return state
-            });
-        },
-        [chainId, setState]
-    );
-
-    useEffect(() => {
-        if (!(chainId && library)) return
-
-        setState({ chainId, blockNumber: null });
-
-        library
-            .getBlockNumber()
-            .then(blockNumberCallback)
-            .catch((error) => console.error(`Failed to get block number for chainId: ${chainId}`, error))
-        library.on('block', blockNumberCallback)
-        return () => {
-            library.removeListener('block', blockNumberCallback)
-        }
-    }, [chainId, library])
-
-    const debouncedState = useDebounce(state)
-    
-    useEffect(() => {
-        if (!(debouncedState.chainId && debouncedState.blockNumber)) return
-        dispatch({
-            type: 'UPDATE_CHAIN_ID',
-            payload: { chainId: debouncedState.chainId }
-        });
-        dispatch({
-            type: 'UPDATE_BLOCK_NUMBER',
-            payload: { blockNumber: debouncedState.blockNumber }
-        });
-    }, [dispatch, debouncedState.blockNumber, debouncedState.chainId])
-    
-    useEffect(() => {
-        dispatch({
-            type: 'UPDATE_CHAIN_ID',
-            payload: { chainId: debouncedState.chainId ?? null }
-        });
-    }, [dispatch, debouncedState.chainId])
-
-    return null;
+const AppContext = createContext();
+const AppDispatchContext = createContext();
+const initialState = {
+    chainId: null,
+    blockNumber: null,
+    transactions: []
 };
 
-export default Updater
+function appReducer(state, action) {
+    const { type, payload } = action;
+    switch (type) {
+        case 'ADD_TRANSACTION': {
+            const { transaction } = payload;
+            return {
+                ...state,
+                transactions: [transaction, ...state.transactions]
+            };
+        }
+        case 'UPDATE_CHAIN_ID': {
+            const { chainId } = payload;
+            return {
+                ...state,
+                chainId
+            };
+        }
+        case 'UPDATE_BLOCK_NUMBER': {
+            const { blockNumber } = payload;
+            return {
+                ...state,
+                blockNumber
+            };
+        }
+        default:
+            throw new Error(`Could not handle action type: ${type}`);
+    }
+}
+
+function AppProvider({ children }) {
+    const [state, dispatch] = useReducer(appReducer, initialState);
+
+    return (
+        <AppContext.Provider value={state}>
+            <AppDispatchContext.Provider value={dispatch}>{children}</AppDispatchContext.Provider>
+        </AppContext.Provider>
+    );
+}
+
+AppProvider.propTypes = {
+    children: PropTypes.node.isRequired
+};
+
+function useAppContext() {
+    const context = useContext(AppContext);
+    if (!context) {
+        throw new Error('useAppContext must be used within a AppProvider');
+    }
+    return context;
+}
+
+function useAppDispatch() {
+    const context = useContext(AppDispatchContext);
+    if (!context) {
+        throw new Error('useAppDispatch must be used within a AppProvider');
+    }
+    return context;
+}
+
+export { AppProvider, useAppContext, useAppDispatch };

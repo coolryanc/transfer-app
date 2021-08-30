@@ -7,10 +7,9 @@ import { Box } from '@material-ui/core';
 import Header from './components/Header';
 import Payment from './components/Payment';
 import Toast from './components/shared/Toast.jsx';
-// updaters
-import AppUpdater from './state'
-// store
-import { AppProvider } from './store';
+// state
+import { AppProvider } from './state';
+import AppUpdater from './state/app'
 // theme
 import Theme from './theme';
 // utils

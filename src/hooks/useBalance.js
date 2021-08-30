@@ -6,17 +6,20 @@ function useBalance() {
     const [balance, setBalance] = useState(null);
     const { account, library, chainId } = useWeb3React();
 
-    useEffect(async () => {
-        try {
-            if (account && library) {
-                const balance = await library.getBalance(account);
-                if (balance) {
-                    setBalance(formatEther(balance));
+    useEffect(() => {
+        async function fetch() {
+            try {
+                if (account && library) {
+                    const balance = await library.getBalance(account);
+                    if (balance) {
+                        setBalance(formatEther(balance));
+                    }
+                } else {
+                    setBalance(null);
                 }
-            } else {
-                setBalance(null);
-            }
-        } catch (e) { setBalance(null); }
+            } catch (e) { setBalance(null); }
+        }
+        fetch();
     }, [account, library, chainId])
 
     return useMemo(() => balance, [balance])
