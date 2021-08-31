@@ -32,7 +32,7 @@ const PaymentForm = () => {
         if (!library) {
             reset({ ...formInitValues });
         }
-    }, [library])
+    }, [library, reset]);
 
     const onSubmit = async (data) => {
         const { address, amount } = data;

@@ -74,7 +74,7 @@ const Updater = () => {
                 });
             });
 
-    }, [chainId, library, blockNumber, transactions, dispatch, getReceipt])
+    }, [chainId, library, blockNumber, transactions, dispatch, getReceipt, enqueueSnackbar])
 
     return null;
 };

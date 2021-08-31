@@ -37,9 +37,9 @@ const Updater = () => {
         return () => {
             library.removeListener('block', blockNumberCallback)
         }
-    }, [chainId, library])
+    }, [chainId, library, blockNumberCallback]);
 
-    const debouncedState = useDebounce(state)
+    const debouncedState = useDebounce(state);
     
     useEffect(() => {
         if (!(debouncedState.chainId && debouncedState.blockNumber)) return
