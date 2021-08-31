@@ -94,9 +94,9 @@ const PaymentForm = () => {
                     <NumberFormat
                         thousandSeparator={true}
                         decimalScale={5}
+                        decimalSeparator="."
                         prefix="$ "
                         allowNegative={false}
-                        isNumericString
                         customInput={TextField}
                         fullWidth
                         margin="normal"
